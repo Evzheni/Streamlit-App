@@ -205,7 +205,7 @@ def render_cardio_section():
         else:
             st.success("Низький ризик серцево-судинних захворювань.")
         
-        render_text_probabilities(probabilities, ['Відсутність ризик', 'Наявність ризик'])
+        render_text_probabilities(probabilities, ['Відсутність ризику', 'Наявність ризику'])
             
 
 def render_model_analysis():
