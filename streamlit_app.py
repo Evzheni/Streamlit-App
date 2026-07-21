@@ -14,13 +14,20 @@ def load_and_predict(X: ArrayLike, filename: str = "linear_regression_model.jobl
     y = model.predict(X)
     return y
 
-def load_and_predict_classifier(features, filename):
+def load_and_predict_text(text: str, filename: str) -> tuple[int, ArrayLike]:
     model = load(filename)
-    feature_names = model.feature_names_in_
-    X = pd.DataFrame([features], columns=feature_names)
+    prediction = model.predict([text])[0]
+    probabilities = model.predict_proba([text])[0]
+    return prediction, probabilities
+
+def load_and_predict_tabular(features: list, filename: str) -> tuple[int, ArrayLike]:
+    model = load(filename)
+    X = pd.DataFrame(
+        [features],
+        columns=model.feature_names_in_
+    )
     prediction = model.predict(X)[0]
     probabilities = model.predict_proba(X)[0]
-
     return prediction, probabilities
 
 def set_random_email():
@@ -93,7 +100,7 @@ def render_spam_filter_section():
         check_clicked = st.button("Перевірити на Спам")
 
     if check_clicked:      
-        prediction, probabilities = load_and_predict_classifier(email_text, "spam_naive_bayes.joblib")
+        prediction, probabilities = load_and_predict_text( email_text, "spam_naive_bayes.joblib")
         
         if prediction == 1:
             st.error("Вірогідно, що це СПАМ.")
@@ -191,7 +198,7 @@ def render_cardio_section():
     if st.button("Оцінити ризик"):
         features = [gender, height, weight, ap_hi, ap_lo, cholesterol, gluc, smoke, alco, active, age_years, bmi]
         
-        prediction, probabilities = load_and_predict_classifier(features, "rf_cardio_model.joblib")
+        prediction, probabilities = load_and_predict_tabular(features, "rf_cardio_model.joblib")
         
         if prediction == 1:
             st.warning("Підвищений ризик серцево-судинних захворювань.")
